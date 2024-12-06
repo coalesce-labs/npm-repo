@@ -1,32 +1,32 @@
 {
-    "_id": "mock",
-    "name": "mock",
-    "dist-tags": {
-        "latest": "1.0.0"
-    },
-    "versions": {
-        "1.0.0": {
-            "_id": "mock@1.0.0",
-            "name": "mock",
-            "version": "1.0.0",
-            "readme": "ERROR: No README data found!",
-            "scripts": {
-                "test": "echo \"Error: no test specified\" && exit 1"
-            },
-            "_nodeVersion": "21.6.0",
-            "_npmVersion": "10.2.4",
-            "dist": {
-                "integrity": "sha512-SNnLJEJI0KKZFd7ERMTIlY0ytnsxMGeXiakPogMtfIfP8HaG84Jr6UQZd99/Mn9U1RnOLfk52nxoPUC0DKCAPw==",
-                "shasum": "66cd84db3f6d55c9a74329f82e3e46373cf7dd5b",
-                "tarball": "http://localhost:8787/mock/-/mock-1.0.0.tgz"
-            }
-        }
-    },
-    "_attachments": {
-        "mock-1.0.0.tgz": {
-            "content_type": "application/octet-stream",
-            "data": "H4sIAAAAAAAAE+2VsU7DMBCGO+cpTh5akFB6adO0CmPFwMxIGVzHSdy6dmQ70Ar1FZjZeEUeASUpVMrCAKVCyrec/Du+/7eikwvK1jTjQ6ESvvVXtncCEDEKQ6gqIrYrIoYTwPEkwiCIIgwBg9Eoqr4/RZg2pXXU9PDHXu3L/ROYVlZL7kudXQxUkUpqeALCAtNawvvb68vg8vrcITtORnGY/0P1V1ar3/b4bv7Dadia/3EQjLv5/wuePQCi6IaTGIh15ZJcVcojN1ZoVYmBjz42asItM6Jwh51G3FBRrz5fkEYtyqUUNp9rlYqMxFD5ABDDM2Gd2VUHcueKeDiUmlGZa+vi2XQ2JR7Avu6w5rsnbRJLYrh/qBVaulybo7MUjCtbJ7+9mzdaKiSvjzR+X6E8gKZJcwN7jOS4dVULznINC3JjjDYxKA3VBtiCM5EKniwI9PvAt8JBUIf09uf+dx0dHR0/4QMjwEAXAAwAAA==",
-            "length": 367
-        }
-    }
+	"_id": "mock",
+	"name": "mock",
+	"dist-tags": {
+		"latest": "1.0.0"
+	},
+	"versions": {
+		"1.0.0": {
+			"_id": "mock@1.0.0",
+			"name": "mock",
+			"version": "1.0.0",
+			"readme": "ERROR: No README data found!",
+			"scripts": {
+				"test": "echo \"Error: no test specified\" && exit 1"
+			},
+			"_nodeVersion": "21.6.0",
+			"_npmVersion": "10.2.4",
+			"dist": {
+				"integrity": "sha512-SNnLJEJI0KKZFd7ERMTIlY0ytnsxMGeXiakPogMtfIfP8HaG84Jr6UQZd99/Mn9U1RnOLfk52nxoPUC0DKCAPw==",
+				"shasum": "66cd84db3f6d55c9a74329f82e3e46373cf7dd5b",
+				"tarball": "http://localhost:8787/mock/-/mock-1.0.0.tgz"
+			}
+		}
+	},
+	"_attachments": {
+		"mock-1.0.0.tgz": {
+			"content_type": "application/octet-stream",
+			"data": "H4sIAAAAAAAAE+2VsU7DMBCGO+cpTh5akFB6adO0CmPFwMxIGVzHSdy6dmQ70Ar1FZjZeEUeASUpVMrCAKVCyrec/Du+/7eikwvK1jTjQ6ESvvVXtncCEDEKQ6gqIrYrIoYTwPEkwiCIIgwBg9Eoqr4/RZg2pXXU9PDHXu3L/ROYVlZL7kudXQxUkUpqeALCAtNawvvb68vg8vrcITtORnGY/0P1V1ar3/b4bv7Dadia/3EQjLv5/wuePQCi6IaTGIh15ZJcVcojN1ZoVYmBjz42asItM6Jwh51G3FBRrz5fkEYtyqUUNp9rlYqMxFD5ABDDM2Gd2VUHcueKeDiUmlGZa+vi2XQ2JR7Avu6w5rsnbRJLYrh/qBVaulybo7MUjCtbJ7+9mzdaKiSvjzR+X6E8gKZJcwN7jOS4dVULznINC3JjjDYxKA3VBtiCM5EKniwI9PvAt8JBUIf09uf+dx0dHR0/4QMjwEAXAAwAAA==",
+			"length": 367
+		}
+	}
 }
