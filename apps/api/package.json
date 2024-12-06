@@ -5,6 +5,7 @@
 		"dev": "wrangler dev",
 		"deploy": "wrangler deploy --minify",
 		"generate-migrations": "drizzle-kit generate",
+		"lint": "biome check",
 		"migrate:local": "npx wrangler d1 migrations apply npflared",
 		"migrate:prod": "npx wrangler d1 migrations apply npflared --remote",
 		"test:watch": "vitest watch",
