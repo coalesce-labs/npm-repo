@@ -1,0 +1,28 @@
+{
+	"name": "@npflared/api",
+	"version": "0.0.1",
+	"scripts": {
+		"dev": "wrangler dev",
+		"deploy": "wrangler deploy --minify",
+		"generate-migrations": "drizzle-kit generate",
+		"migrate:local": "npx wrangler d1 migrations apply npflared",
+		"migrate:prod": "npx wrangler d1 migrations apply npflared --remote",
+		"test:watch": "vitest watch",
+		"test:single": "vitest run",
+		"check-types": "tsc --noEmit"
+	},
+	"dependencies": {
+		"@hono/zod-validator": "^0.4.1",
+		"drizzle-orm": "^0.36.4",
+		"hono": "^4.6.11",
+		"semver-regex": "^4.0.5",
+		"zod": "^3.23.8"
+	},
+	"devDependencies": {
+		"@cloudflare/vitest-pool-workers": "^0.5.31",
+		"@cloudflare/workers-types": "^4.20241112.0",
+		"drizzle-kit": "^0.28.1",
+		"vitest": "2.0.5",
+		"wrangler": "^3.88.0"
+	}
+}
