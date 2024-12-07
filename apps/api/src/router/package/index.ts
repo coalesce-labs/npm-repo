@@ -17,7 +17,7 @@ const getPackageHandler = packageRouterFactory.createHandlers(loadToken, async (
 	const db = drizzle(c.env.DB);
 	const tokenAccessChecker = assertTokenAccess(c.get("token"));
 
-	const packageName = c.req.param("package");
+	const packageName = decodeURIComponent(c.req.param("package"));
 
 	const packageQueryResult = await db
 		.select()
@@ -66,7 +66,7 @@ const putPackageHandler = packageRouterFactory.createHandlers(
 		const tokenAccessChecker = assertTokenAccess(c.get("token"));
 
 		const body = c.req.valid("json");
-		const packageName = c.req.param("package");
+		const packageName = decodeURIComponent(c.req.param("package"));
 
 		if (!tokenAccessChecker("write", packageName)) {
 			throw new HTTPException(403, { message: "Forbidden" });
@@ -159,14 +159,21 @@ const putPackageHandler = packageRouterFactory.createHandlers(
 
 const getPackageTarballHandler = packageRouterFactory.createHandlers(loadToken, async (c) => {
 	const tokenAccessChecker = assertTokenAccess(c.get("token"));
-	const packageName = c.req.param("packageName");
-	const tarballName = c.req.param("tarballName");
 
-	if (!tokenAccessChecker("read", packageName)) {
+	const packageScope = decodeURIComponent(c.req.param("packageScope"));
+	const packageName = decodeURIComponent(c.req.param("packageName"));
+
+	const tarballScope = decodeURIComponent(c.req.param("tarballScope"));
+	const tarballName = decodeURIComponent(c.req.param("tarballName"));
+
+	const fullPackageName = [packageScope, packageName].filter(Boolean).join("/");
+	const fullTarballName = [tarballScope, tarballName].filter(Boolean).join("/");
+
+	if (!tokenAccessChecker("read", fullPackageName)) {
 		throw new HTTPException(403, { message: "Forbidden" });
 	}
 
-	const packageTarball = await c.env.BUCKET.get(c.req.param("tarballName"));
+	const packageTarball = await c.env.BUCKET.get(fullTarballName);
 	if (!packageTarball) {
 		throw new HTTPException(404, { message: "Package tarball not found" });
 	}
@@ -180,7 +187,7 @@ const getPackageTarballHandler = packageRouterFactory.createHandlers(loadToken, 
 		throw new HTTPException(500, { message: "Invalid tarball metadata" });
 	}
 
-	if (tarballMetadata.package !== packageName) {
+	if (tarballMetadata.package !== fullPackageName) {
 		throw new HTTPException(500, { message: "Incoherent tarball metadata" });
 	}
 
@@ -190,4 +197,5 @@ const getPackageTarballHandler = packageRouterFactory.createHandlers(loadToken, 
 export const packageRouter = new Hono<AppEnv>()
 	.get("/:package", ...getPackageHandler)
 	.put("/:package", ...putPackageHandler)
-	.get("/:packageName/-/:tarballName", ...getPackageTarballHandler);
+	.get("/:packageName/-/:tarballName", ...getPackageTarballHandler)
+	.get("/:packageScope/:packageName/-/:tarballScope/:tarballName", ...getPackageTarballHandler);
