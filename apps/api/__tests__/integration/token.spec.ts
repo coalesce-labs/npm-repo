@@ -6,31 +6,65 @@ import type { tokenTable } from "../../src/db/schema";
 
 describe("token routes", () => {
 	describe("POST /tokens", () => {
-		it("should not create a token without providing the master key", async () => {
-			const response = await SELF.fetch("http://localhost/-/npm/v1/tokens", {
-				method: "post"
-			});
-
-			expect(response.status).toBe(401);
-			expect(response.statusText).toBe("Unauthorized");
-
-			const responseBody = await response.text();
-			expect(responseBody).toBe("Missing 'X-Master-Key' header");
-		});
-
-		it("should not create a token with an invalid master key", async () => {
+		it("should not create a token without being authenticated", async () => {
 			const response = await SELF.fetch("http://localhost/-/npm/v1/tokens", {
 				method: "POST",
 				headers: {
-					"x-master-key": "invalid_master_key"
-				}
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify({
+					name: "test-token",
+					scopes: [{ type: "package:read", values: ["*"] }]
+				})
 			});
 
-			expect(response.status).toBe(401);
-			expect(response.statusText).toBe("Unauthorized");
+			expect(response.status).toBe(403);
+			expect(response.statusText).toBe("Forbidden");
 
 			const responseBody = await response.text();
-			expect(responseBody).toBe("Invalid master key");
+			expect(responseBody).toBe("Forbidden");
+		});
+
+		it("should not create a token with an invalid token", async () => {
+			const response = await SELF.fetch("http://localhost/-/npm/v1/tokens", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: "Bearer invalid_token"
+				},
+				body: JSON.stringify({
+					name: "test-token",
+					scopes: [{ type: "package:read", values: ["*"] }]
+				})
+			});
+
+			expect(response.status).toBe(403);
+			expect(response.statusText).toBe("Forbidden");
+
+			const responseBody = await response.text();
+			expect(responseBody).toBe("Forbidden");
+		});
+
+		it("should not create a token with a token that does not have the token write scope", async () => {
+			const { token } = await createToken();
+
+			const response = await SELF.fetch("http://localhost/-/npm/v1/tokens", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${token}`
+				},
+				body: JSON.stringify({
+					name: "test-token",
+					scopes: [{ type: "package:read", values: ["*"] }]
+				})
+			});
+
+			expect(response.status).toBe(403);
+			expect(response.statusText).toBe("Forbidden");
+
+			const responseBody = await response.text();
+			expect(responseBody).toBe("Forbidden");
 		});
 
 		it("should not create a token without providing at least one scope", async () => {
@@ -38,7 +72,7 @@ describe("token routes", () => {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
-					"x-master-key": env.MASTER_KEY
+					Authorization: `Bearer ${env.ADMIN_TOKEN}`
 				},
 				body: JSON.stringify({
 					name: "test-token",
@@ -55,7 +89,7 @@ describe("token routes", () => {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
-					"x-master-key": env.MASTER_KEY
+					Authorization: `Bearer ${env.ADMIN_TOKEN}`
 				},
 				body: JSON.stringify({
 					name: "test-token",
@@ -87,7 +121,7 @@ describe("token routes", () => {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
-					"x-master-key": env.MASTER_KEY
+					Authorization: `Bearer ${env.ADMIN_TOKEN}`
 				},
 				body: JSON.stringify(body)
 			});
@@ -105,31 +139,45 @@ describe("token routes", () => {
 	});
 
 	describe("GET /tokens", () => {
-		it("should not get tokens without providing the master key", async () => {
+		it("should not get tokens without been authenticated", async () => {
 			const response = await SELF.fetch("http://localhost/-/npm/v1/tokens", {
 				method: "GET"
 			});
 
-			expect(response.status).toBe(401);
-			expect(response.statusText).toBe("Unauthorized");
+			expect(response.status).toBe(403);
+			expect(response.statusText).toBe("Forbidden");
 
 			const responseBody = await response.text();
-			expect(responseBody).toBe("Missing 'X-Master-Key' header");
+			expect(responseBody).toBe("Forbidden");
 		});
 
-		it("should not get tokens with an invalid master key", async () => {
+		it("should not get tokens with an invalid token", async () => {
 			const response = await SELF.fetch("http://localhost/-/npm/v1/tokens", {
 				method: "GET",
 				headers: {
-					"x-master-key": "invalid_master_key"
+					Authorization: "Bearer invalid_token"
 				}
 			});
 
-			expect(response.status).toBe(401);
-			expect(response.statusText).toBe("Unauthorized");
+			expect(response.status).toBe(403);
+			expect(response.statusText).toBe("Forbidden");
 
 			const responseBody = await response.text();
-			expect(responseBody).toBe("Invalid master key");
+			expect(responseBody).toBe("Forbidden");
+		});
+
+		it("should not get tokens with a token that does not have the token read scope", async () => {
+			const { token } = await createToken();
+
+			const response = await SELF.fetch("http://localhost/-/npm/v1/tokens", {
+				method: "GET",
+				headers: {
+					Authorization: `Bearer ${token}`
+				}
+			});
+
+			expect(response.status).toBe(403);
+			expect(response.statusText).toBe("Forbidden");
 		});
 
 		it("should get tokens", async () => {
@@ -138,48 +186,77 @@ describe("token routes", () => {
 			const response = await SELF.fetch("http://localhost/-/npm/v1/tokens", {
 				method: "GET",
 				headers: {
-					"x-master-key": env.MASTER_KEY
+					Authorization: `Bearer ${env.ADMIN_TOKEN}`
 				}
 			});
 
 			expect(response.status).toBe(200);
 
 			const responseBody = await response.json<(typeof tokenTable.$inferSelect)[]>();
-			expect(responseBody).to.be.an("array").to.have.length(1);
-			expect(responseBody[0]).to.have.property("token", token);
-			expect(responseBody[0]).to.have.property("name", name);
-			expect(responseBody[0]).to.have.property("scopes").to.be.deep.equal(scopes);
-			expect(responseBody[0]).to.have.property("createdAt", createdAt);
-			expect(responseBody[0]).to.have.property("updatedAt", updatedAt);
+			expect(responseBody).to.be.an("array").to.have.length(2);
+
+			const adminToken = responseBody.find((tokenDetails) => tokenDetails.token === env.ADMIN_TOKEN);
+			expect(adminToken).to.be.an("object");
+			expect(adminToken).to.have.property("token", env.ADMIN_TOKEN);
+			expect(adminToken).to.have.property("name", "admin-token");
+			expect(adminToken)
+				.to.have.property("scopes")
+				.to.be.deep.equal([
+					{ type: "token:read+write", values: ["*"] },
+					{ type: "user:read+write", values: ["*"] },
+					{ type: "package:read+write", values: ["*"] }
+				]);
+
+			const createdToken = responseBody.find((tokenDetails) => tokenDetails.token === token);
+			expect(createdToken).to.be.an("object");
+			expect(createdToken).to.have.property("token", token);
+			expect(createdToken).to.have.property("name", name);
+			expect(createdToken).to.have.property("scopes").to.be.deep.equal(scopes);
+			expect(createdToken).to.have.property("createdAt", createdAt);
+			expect(createdToken).to.have.property("updatedAt", updatedAt);
 		});
 	});
 
 	describe("GET /tokens/:tokenId", () => {
-		it("should not get a token without providing the master key", async () => {
+		it("should not get a token without being authenticated", async () => {
 			const response = await SELF.fetch("http://localhost/-/npm/v1/tokens/token/test-token", {
 				method: "GET"
 			});
 
-			expect(response.status).toBe(401);
-			expect(response.statusText).toBe("Unauthorized");
+			expect(response.status).toBe(403);
+			expect(response.statusText).toBe("Forbidden");
 
 			const responseBody = await response.text();
-			expect(responseBody).toBe("Missing 'X-Master-Key' header");
+			expect(responseBody).toBe("Forbidden");
 		});
 
-		it("should not get a token with an invalid master key", async () => {
+		it("should not get a token with an invalid token", async () => {
 			const response = await SELF.fetch("http://localhost/-/npm/v1/tokens/token/test-token", {
 				method: "GET",
 				headers: {
-					"x-master-key": "invalid_master_key"
+					Authorization: "Bearer invalid_token"
 				}
 			});
 
-			expect(response.status).toBe(401);
-			expect(response.statusText).toBe("Unauthorized");
+			expect(response.status).toBe(403);
+			expect(response.statusText).toBe("Forbidden");
 
 			const responseBody = await response.text();
-			expect(responseBody).toBe("Invalid master key");
+			expect(responseBody).toBe("Forbidden");
+		});
+
+		it("should not get a token with a token that does not have the token read scope", async () => {
+			const { token } = await createToken();
+
+			const response = await SELF.fetch(`http://localhost/-/npm/v1/tokens/token/${token}`, {
+				method: "GET",
+				headers: {
+					Authorization: `Bearer ${token}`
+				}
+			});
+
+			expect(response.status).toBe(403);
+			expect(response.statusText).toBe("Forbidden");
 		});
 
 		it("should get a token", async () => {
@@ -188,7 +265,7 @@ describe("token routes", () => {
 			const response = await SELF.fetch(`http://localhost/-/npm/v1/tokens/token/${token}`, {
 				method: "GET",
 				headers: {
-					"x-master-key": env.MASTER_KEY
+					Authorization: `Bearer ${env.ADMIN_TOKEN}`
 				}
 			});
 
@@ -206,31 +283,45 @@ describe("token routes", () => {
 	});
 
 	describe("DELETE /tokens/token/:tokenId", () => {
-		it("should not delete a token without providing the master key", async () => {
+		it("should not delete a token without being authenticated", async () => {
 			const response = await SELF.fetch("http://localhost/-/npm/v1/tokens/token/test-token", {
 				method: "DELETE"
 			});
 
-			expect(response.status).toBe(401);
-			expect(response.statusText).toBe("Unauthorized");
+			expect(response.status).toBe(403);
+			expect(response.statusText).toBe("Forbidden");
 
 			const responseBody = await response.text();
-			expect(responseBody).toBe("Missing 'X-Master-Key' header");
+			expect(responseBody).toBe("Forbidden");
 		});
 
-		it("should not delete a token with an invalid master key", async () => {
+		it("should not delete a token with an invalid token", async () => {
 			const response = await SELF.fetch("http://localhost/-/npm/v1/tokens/token/test-token", {
 				method: "DELETE",
 				headers: {
-					"x-master-key": "invalid_master_key"
+					Authorization: "Bearer invalid_token"
 				}
 			});
 
-			expect(response.status).toBe(401);
-			expect(response.statusText).toBe("Unauthorized");
+			expect(response.status).toBe(403);
+			expect(response.statusText).toBe("Forbidden");
 
 			const responseBody = await response.text();
-			expect(responseBody).toBe("Invalid master key");
+			expect(responseBody).toBe("Forbidden");
+		});
+
+		it("should not delete a token with a token that does not have the token write scope", async () => {
+			const { token } = await createToken();
+
+			const response = await SELF.fetch(`http://localhost/-/npm/v1/tokens/token/${token}`, {
+				method: "DELETE",
+				headers: {
+					Authorization: `Bearer ${token}`
+				}
+			});
+
+			expect(response.status).toBe(403);
+			expect(response.statusText).toBe("Forbidden");
 		});
 
 		it("should delete a token", async () => {
@@ -239,7 +330,7 @@ describe("token routes", () => {
 			const response = await SELF.fetch(`http://localhost/-/npm/v1/tokens/token/${token}`, {
 				method: "DELETE",
 				headers: {
-					"x-master-key": env.MASTER_KEY
+					Authorization: `Bearer ${env.ADMIN_TOKEN}`
 				}
 			});
 

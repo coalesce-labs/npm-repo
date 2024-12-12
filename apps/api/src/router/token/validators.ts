@@ -6,7 +6,19 @@ export const postToken = {
 		scopes: z
 			.array(
 				z.object({
-					type: z.enum(["package:read", "package:write", "package:read+write"]),
+					type: z.enum([
+						"package:read",
+						"package:write",
+						"package:read+write",
+
+						"user:read",
+						"user:write",
+						"user:read+write",
+
+						"token:read",
+						"token:write",
+						"token:read+write"
+					]),
 					values: z.array(z.string())
 				})
 			)

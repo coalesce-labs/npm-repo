@@ -1,7 +1,4 @@
-import { relations } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/d1";
 import { integer, primaryKey, sqliteTable, text } from "drizzle-orm/sqlite-core";
-import type { Context } from "hono";
 
 export const tokenTable = sqliteTable("token", {
 	token: text("token").primaryKey().notNull(),

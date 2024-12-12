@@ -1,6 +1,8 @@
 import semverRegex from "semver-regex";
 import { z } from "zod";
 
+const packageNameRegex = /^(@[a-z0-9-~][a-z0-9-._~]*\/)?[a-z0-9-~][a-z0-9-._~]*$/;
+
 export const putPackage = {
 	json: z.object({
 		_id: z.string().min(1),
@@ -9,10 +11,12 @@ export const putPackage = {
 		versions: z.record(
 			z.string().refine((value) => semverRegex().test(value), { message: "Version is not in semver format" }),
 			z.object({
-				_id: z.string(),
-				name: z.string(),
+				_id: z.string().min(1),
+				name: z.string().min(1),
 				type: z.string().optional(),
-				version: z.string(),
+				version: z
+					.string()
+					.refine((value) => semverRegex().test(value), { message: "Version is not in semver format" }),
 				readme: z.string(),
 				scripts: z.record(z.string()).optional(),
 				devDependencies: z.record(z.string()).optional(),

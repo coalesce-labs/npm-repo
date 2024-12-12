@@ -1,4 +1,4 @@
-name = "api"
+name = "npflared"
 main = "src/index.ts"
 compatibility_date = "2024-11-24"
 
@@ -7,22 +7,10 @@ compatibility_flags = [ "nodejs_compat" ]
 [vars]
 FALLBACK_REGISTRY_ENDPOINT = "https://registry.npmjs.org"
 
-# [[kv_namespaces]]
-# binding = "MY_KV_NAMESPACE"
-# id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-
 [[r2_buckets]]
 binding = "BUCKET"
-bucket_name = "npflared"
+bucket_name = "BUCKET_NAME"
 
 [[d1_databases]]
 binding = "DB"
-database_name = "npflared"
-database_id = "d327592d-8244-4d0e-a6c2-0d33c3622022"
-
-# [ai]
-# binding = "AI"
-
-# [observability]
-# enabled = true
-# head_sampling_rate = 1
+database_id = "D1_DATABASE_ID"

@@ -11,7 +11,7 @@ export const createToken = async (
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
-			"x-master-key": env.MASTER_KEY
+			Authorization: `Bearer ${env.ADMIN_TOKEN}`
 		},
 		body: JSON.stringify(body)
 	});

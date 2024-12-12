@@ -15,9 +15,9 @@ export const packageRouterFactory = createFactory<AppEnv>();
 
 const getPackageHandler = packageRouterFactory.createHandlers(loadToken, async (c) => {
 	const db = drizzle(c.env.DB);
-	const tokenAccessChecker = assertTokenAccess(c.get("token"));
+	const can = assertTokenAccess(c.get("token"));
 
-	const packageName = decodeURIComponent(c.req.param("package"));
+	const packageName = c.req.param("package");
 
 	const packageQueryResult = await db
 		.select()
@@ -34,7 +34,7 @@ const getPackageHandler = packageRouterFactory.createHandlers(loadToken, async (
 		return await fetch(fallbackRegistryURL);
 	}
 
-	if (!tokenAccessChecker("read", packageName)) {
+	if (!can("read", "package", packageName)) {
 		throw new HTTPException(403, { message: "Forbidden" });
 	}
 
@@ -63,12 +63,12 @@ const putPackageHandler = packageRouterFactory.createHandlers(
 	zValidator("json", putPackage.json),
 	async (c) => {
 		const db = drizzle(c.env.DB);
-		const tokenAccessChecker = assertTokenAccess(c.get("token"));
+		const can = assertTokenAccess(c.get("token"));
 
 		const body = c.req.valid("json");
-		const packageName = decodeURIComponent(c.req.param("package"));
+		const packageName = c.req.param("package");
 
-		if (!tokenAccessChecker("write", packageName)) {
+		if (!can("write", "package", packageName)) {
 			throw new HTTPException(403, { message: "Forbidden" });
 		}
 
@@ -158,18 +158,18 @@ const putPackageHandler = packageRouterFactory.createHandlers(
 );
 
 const getPackageTarballHandler = packageRouterFactory.createHandlers(loadToken, async (c) => {
-	const tokenAccessChecker = assertTokenAccess(c.get("token"));
+	const can = assertTokenAccess(c.get("token"));
 
-	const packageScope = decodeURIComponent(c.req.param("packageScope"));
-	const packageName = decodeURIComponent(c.req.param("packageName"));
+	const packageScope = c.req.param("packageScope");
+	const packageName = c.req.param("packageName");
 
-	const tarballScope = decodeURIComponent(c.req.param("tarballScope"));
-	const tarballName = decodeURIComponent(c.req.param("tarballName"));
+	const tarballScope = c.req.param("tarballScope");
+	const tarballName = c.req.param("tarballName");
 
 	const fullPackageName = [packageScope, packageName].filter(Boolean).join("/");
 	const fullTarballName = [tarballScope, tarballName].filter(Boolean).join("/");
 
-	if (!tokenAccessChecker("read", fullPackageName)) {
+	if (!can("read", "package", fullPackageName)) {
 		throw new HTTPException(403, { message: "Forbidden" });
 	}
 

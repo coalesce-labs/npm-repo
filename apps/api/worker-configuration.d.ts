@@ -2,7 +2,6 @@
 
 interface Env {
 	FALLBACK_REGISTRY_ENDPOINT: "https://registry.npmjs.org";
-	MASTER_KEY: string;
 	BUCKET: R2Bucket;
 	DB: D1Database;
 }
