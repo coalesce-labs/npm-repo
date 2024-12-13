@@ -1,12 +1,15 @@
-# What is npflared?
+# What is Npflared?
 
 Npflared is a self hostable serverless private npm registry. It's build on top of cloudflare workers, d1 and r2.
 
 ## Why?
 
-If you need an easy way to distribute npm packages internally or to your client at any cost, npflared is the solution for you.
+If you need an easy way to distribute npm packages internally or to your client at any cost, Npflared is the solution for you.
 
-## Using npflared
+Npflared is not aiming to be a fully drop-in replacement for a npm registry. It's goal is to be a private registry for you and your team
+
+
+## Using Npflared
 
 ### Publishing a package
 Set the `publishConfig` to your Npflared instance

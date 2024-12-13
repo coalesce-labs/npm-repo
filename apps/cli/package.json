@@ -1,25 +1,25 @@
 {
-  "name": "@npflared/cli",
-  "version": "0.0.1",
-  "main": "index.js",
-  "scripts": {
-    "lint": "biome check",
-    "build": "esbuild src/index.ts --platform=node --bundle --outfile=dist/index.js",
-    "build:watch": "esbuild src/index.ts --watch --platform=node --bundle --outfile=dist/index.js"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "@types/degit": "^2.8.6",
-    "@types/node": "^18.19.67",
-    "esbuild": "^0.24.0",
-    "typescript": "5.5.4"
-  },
-  "dependencies": {
-    "degit": "^2.8.4",
-    "inquirer": "^12.2.0",
-    "ora": "^8.1.1",
-    "wrangler": "^3.88.0"
-  }
+	"name": "@npflared/cli",
+	"version": "0.0.1",
+	"main": "index.js",
+	"scripts": {
+		"lint": "biome check",
+		"build": "esbuild src/index.ts --platform=node --bundle --outfile=dist/index.js",
+		"build:watch": "esbuild src/index.ts --watch --platform=node --bundle --outfile=dist/index.js"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"devDependencies": {
+		"@types/degit": "^2.8.6",
+		"@types/node": "^18.19.67",
+		"esbuild": "^0.24.0",
+		"typescript": "5.5.4"
+	},
+	"dependencies": {
+		"degit": "^2.8.4",
+		"inquirer": "^12.2.0",
+		"ora": "^8.1.1",
+		"wrangler": "^3.88.0"
+	}
 }

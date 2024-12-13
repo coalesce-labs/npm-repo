@@ -20,6 +20,6 @@ features:
     details: You can use Npflared with your own stack without compromise as it aim to make main features 100% compatible with existing npm clients
     icon: 🔌
   - title: Self hostable on Cloudflare for free
-    details: Npflared is based on cloudflare services (worker, d1 and r2), this allow to host your own npflared for free !
+    details: Npflared is based on cloudflare services (worker, d1 and r2), this allow to host your own Npflared for free !
     icon: ☁️
 ---
