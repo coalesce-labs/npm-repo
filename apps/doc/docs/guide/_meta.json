@@ -1,1 +1,14 @@
-["index", "project-state", "install"]
+[
+	"index",
+	"install",
+	{
+		"type": "dir",
+		"name": "api",
+		"label": "API"
+	},
+	{
+		"type": "dir",
+		"name": "cookbook",
+		"label": "Cookbook"
+	}
+]

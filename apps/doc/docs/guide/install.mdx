@@ -1,0 +1,70 @@
+import { PackageManagerTabs } from '@theme';
+
+# Install
+
+## Manually
+
+### 1. Clone the project
+```shell
+npx degit Thomascogez/npflared/apps/api
+```
+:::info
+You can also clone the project using git command but degit allow you to only retrieve the necessary parts
+:::
+
+## 2. Install dependencies
+After cloning the project you will need to install dependencies project using your favorite package manager 
+<PackageManagerTabs command="install" />
+
+:::info
+This project use `pnpm` as it dependencies manager
+:::
+
+## 3. Configure project
+In order to configure the project you will need to edit the `wrangler.toml` file
+
+### Configure your R2 bucket
+Go to your [Cloudflare Dashboard](https://dash.cloudflare.com/) and create a new **R2** bucket.
+Copy the name of your bucket and edit your `wrangler.toml` file 
+
+```toml file="wrangler.toml"
+[[r2_buckets]]
+binding = "BUCKET"
+bucket_name = "BUCKET_NAME" # Replace BUCKET_NAME with the value you have previously copied
+```
+
+### Configure your D1 database
+Go to your [Cloudflare Dashboard](https://dash.cloudflare.com/) and create a new **D1** database.
+Copy the id of your d1 database
+
+
+```toml file="wrangler.toml"
+[[d1_databases]]
+binding = "DB"
+database_id = "D1_DATABASE_ID" # Replace D1_DATABASE_ID with the value you have previously copied
+```
+## 4. Deploy your npflared worker
+Once everything is set-up you can deploy your worker.
+<PackageManagerTabs command="run deploy" />
+
+## 5. Run initial migrations
+Once your worker is deployed you have to run initial database migrations 
+<PackageManagerTabs command="run migrate:prod" />
+
+## 6. Create your admin token 
+In order to distribute tokens for other users, you will need to create an initial token with elevated privileges
+
+:::info
+You can generate any kind of random values
+:::
+
+Run the following command after replacing `ADMIN_TOKEN` with your desired token
+```bash
+npx wrangler d1 execute DB --remote --yes --command "INSERT INTO token (token, name, scopes, created_at, updated_at) VALUES ('ADMIN_TOKEN', 'admin-token', '[{\"type\": \"token:read+write\", \"values\": [\"*\"]}, {\"type\": \"user:read+write\", \"values\": [\"*\"]}, {\"type\": \"package:read+write\", \"values\": [\"*\"]}]', 1734173399, 1734173399)"
+```
+
+And we are done 🎉
+
+
+
+

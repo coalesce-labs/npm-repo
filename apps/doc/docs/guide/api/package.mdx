@@ -1,0 +1,25 @@
+# Package
+
+## Get a package
+
+:::info
+In order to get a paclage, you will need to be authenticated and having at least the `package:read` permission on the targeted package.
+:::
+
+You can get a package by sending a `GET` request to the `/:package` endpoint.
+
+```bash
+curl -X GET https://my-npflared.dev/package
+```
+
+:::info
+The `:package` parameter is the package you want to get.
+:::
+
+## Publish a package 
+
+:::info
+In order to publish a package, you will need to be authenticated and having at least the `package:write` permission on the targeted package.
+:::
+
+You can publish a package by sending a `PUT` request to the `/:package` endpoint with the following body.

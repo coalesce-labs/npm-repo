@@ -1,0 +1,70 @@
+# Tokens
+
+## Generate a new token 
+:::info
+In order to generate a new token, you will need to be authenticated and having at least the `token:write` permission with value `*`.
+:::
+
+You will need to send a `POST` request to the `/-/npm/v1/tokens` endpoint with the following body:
+
+```js
+{
+	"name": "My token",
+	"scopes": [
+		{
+			"type": "package:read",
+			"values": ["*"]
+		},
+		{
+			"type": "package:write",
+			"values": ["@my-scope/my-package", "my-cool-package"]
+		}
+	]
+}
+```
+
+You can send has many scopes as you want.
+
+| Scope type | Description |
+| --- | --- |
+| `package:read` | Read access to a package |
+| `package:write` | Write access to a package |
+| `package:read+write` | Read and write access to a package |
+| `token:read` | Read access to a token |
+| `token:write` | Write access to a token |
+| `token:read+write` | Read and write access to a token |
+
+:::info
+The `values` property is an array of strings. You can use glob patterns to match packages.
+:::
+
+## Get all tokens
+
+You can get all tokens by sending a `GET` request to the `/-/npm/v1/tokens` endpoint.
+
+```bash
+curl -X GET https://my-npflared.dev/-/npm/v1/tokens
+```
+
+## Get a token
+
+You can get a token by sending a `GET` request to the `/-/npm/v1/tokens/token/:token` endpoint.
+
+```bash
+curl -X GET https://my-npflared.dev/-/npm/v1/tokens/token/my-token
+```
+
+:::info
+The `:token` parameter is the token you want to get.
+:::
+
+## Delete a token
+
+You can delete a token by sending a `DELETE` request to the `/-/npm/v1/tokens/token/:token` endpoint.
+
+```bash
+curl -X DELETE https://my-npflared.dev/-/npm/v1/tokens/token/my-token
+```
+
+:::info
+The `:token` parameter is the token you want to delete.
