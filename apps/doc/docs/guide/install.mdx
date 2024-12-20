@@ -35,12 +35,13 @@ bucket_name = "BUCKET_NAME" # Replace BUCKET_NAME with the value you have previo
 
 ### Configure your D1 database
 Go to your [Cloudflare Dashboard](https://dash.cloudflare.com/) and create a new **D1** database.
-Copy the id of your d1 database
+Copy the id and the name of your d1 database
 
 
 ```toml file="wrangler.toml"
 [[d1_databases]]
 binding = "DB"
+database_name = "D1_DATABASE_NAME" # Replace D1_DATABASE_NAME with the value you have previously copied
 database_id = "D1_DATABASE_ID" # Replace D1_DATABASE_ID with the value you have previously copied
 ```
 ## 4. Deploy your npflared worker

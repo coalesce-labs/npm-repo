@@ -13,4 +13,5 @@ bucket_name = "BUCKET_NAME"
 
 [[d1_databases]]
 binding = "DB"
+database_name = "D1_DATABASE_NAME"
 database_id = "D1_DATABASE_ID"

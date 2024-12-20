@@ -12,6 +12,7 @@
 </div>
 
 # Roadmap
+- [ ] Install script/cli
 - [ ] Better input validation
 - [ ] UI for packages discovery and sharing documentation
 - [ ] Full npm endpoint compliance / proxy
