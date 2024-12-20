@@ -8,7 +8,7 @@
 - ☁️ <b>Self hostable on Cloudflare for free</b>, Npflared is based on cloudflare services (worker, d1 and r2), this allow to host your own npflared for free !
 
 <div align="center">
-    [<h3>Documentation</h3></a>](https://npflared.thomas-cogez.fr/)
+    <h3><a target="_blank" href="https://npflared.thomas-cogez.fr/">Documentation</a></h3>
 </div>
 
 # Roadmap
