@@ -1,6 +1,6 @@
 import { Hono } from "hono";
-import { packageRouter } from "./router/package";
-import { tokenRouter } from "./router/token";
+import { packageRouter } from "./routers/package";
+import { tokenRouter } from "./routers/token";
 
 const app = new Hono();
 
