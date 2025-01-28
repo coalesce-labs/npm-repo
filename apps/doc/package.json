@@ -8,9 +8,9 @@
 		"lint": "biome check"
 	},
 	"dependencies": {
-		"rspress": "^1.37.3"
+		"rspress": "^1.40.2"
 	},
 	"devDependencies": {
-		"@types/node": "^18.11.17"
+		"@types/node": "^22.12.0"
 	}
 }

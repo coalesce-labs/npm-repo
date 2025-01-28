@@ -13,17 +13,17 @@
 		"check-types": "tsc --noEmit"
 	},
 	"dependencies": {
-		"@hono/zod-validator": "^0.4.1",
-		"drizzle-orm": "^0.36.4",
-		"hono": "^4.6.11",
+		"@hono/zod-validator": "^0.4.2",
+		"drizzle-orm": "^0.39.0",
+		"hono": "^4.6.19",
 		"semver-regex": "^4.0.5",
-		"zod": "^3.23.8"
+		"zod": "^3.24.1"
 	},
 	"devDependencies": {
-		"@cloudflare/vitest-pool-workers": "^0.5.31",
-		"@cloudflare/workers-types": "^4.20241112.0",
-		"drizzle-kit": "^0.28.1",
-		"vitest": "2.0.5",
-		"wrangler": "^3.88.0"
+		"@cloudflare/vitest-pool-workers": "^0.6.8",
+		"@cloudflare/workers-types": "^4.20250124.3",
+		"drizzle-kit": "^0.30.3",
+		"vitest": "2.1.8",
+		"wrangler": "^3.106.0"
 	}
 }
