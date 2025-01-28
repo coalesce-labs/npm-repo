@@ -7,6 +7,7 @@ import { HTTPException } from "hono/http-exception";
 import { tokenTable } from "../../db/schema";
 import { loadToken } from "../../middlewares/loadToken";
 import { assertTokenAccess } from "../../utils/access";
+import { ensureRequestParam } from "../../utils/common";
 import { postToken } from "./validators";
 
 const tokenRouterFactory = createFactory<AppEnv>();
@@ -47,7 +48,7 @@ const deleteTokenHandler = tokenRouterFactory.createHandlers(loadToken, async (c
 		throw new HTTPException(403, { message: "Forbidden" });
 	}
 
-	await db.delete(tokenTable).where(eq(tokenTable.token, c.req.param("token")));
+	await db.delete(tokenTable).where(eq(tokenTable.token, ensureRequestParam(c.req, "token")));
 
 	return c.json({ message: "ok" }, 200);
 });
@@ -56,14 +57,14 @@ const getTokenHandler = tokenRouterFactory.createHandlers(loadToken, async (c) =
 	const db = drizzle(c.env.DB);
 	const can = assertTokenAccess(c.get("token"));
 
-	if (!can("read", "token", c.req.param("token"))) {
+	if (!can("read", "token", ensureRequestParam(c.req, "token"))) {
 		throw new HTTPException(403, { message: "Forbidden" });
 	}
 
 	const tokenQueryResult = await db
 		.select()
 		.from(tokenTable)
-		.where(eq(tokenTable.token, c.req.param("token")));
+		.where(eq(tokenTable.token, ensureRequestParam(c.req, "token")));
 
 	if (tokenQueryResult.length === 0) {
 		throw new HTTPException(404, { message: "Not found" });

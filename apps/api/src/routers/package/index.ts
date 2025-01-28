@@ -8,7 +8,7 @@ import { HTTPException } from "hono/http-exception";
 import { packageReleaseTable, packageTable } from "../../db/schema";
 import { loadToken } from "../../middlewares/loadToken";
 import { assertTokenAccess } from "../../utils/access";
-import { uint8ArrayFromBinaryString } from "../../utils/common";
+import { ensureRequestParam, uint8ArrayFromBinaryString } from "../../utils/common";
 import { putPackage } from "./validators";
 
 export const packageRouterFactory = createFactory<AppEnv>();
@@ -17,7 +17,7 @@ const getPackageHandler = packageRouterFactory.createHandlers(loadToken, async (
 	const db = drizzle(c.env.DB);
 	const can = assertTokenAccess(c.get("token"));
 
-	const packageName = c.req.param("package");
+	const packageName = ensureRequestParam(c.req, "package");
 
 	const packageQueryResult = await db
 		.select()
@@ -66,7 +66,7 @@ const putPackageHandler = packageRouterFactory.createHandlers(
 		const can = assertTokenAccess(c.get("token"));
 
 		const body = c.req.valid("json");
-		const packageName = c.req.param("package");
+		const packageName = ensureRequestParam(c.req, "package");
 
 		if (!can("write", "package", packageName)) {
 			throw new HTTPException(403, { message: "Forbidden" });
