@@ -22,13 +22,13 @@ importers:
     dependencies:
       '@hono/zod-validator':
         specifier: ^0.4.2
-        version: 0.4.3(hono@4.7.2)(zod@3.24.2)
+        version: 0.4.3(hono@4.7.4)(zod@3.24.2)
       drizzle-orm:
         specifier: ^0.40.0
         version: 0.40.0(@cloudflare/workers-types@4.20250214.0)
       hono:
         specifier: ^4.6.19
-        version: 4.7.2
+        version: 4.7.4
       semver-regex:
         specifier: ^4.0.5
         version: 4.0.5
@@ -1451,6 +1451,9 @@ packages:
   caniuse-lite@1.0.30001703:
     resolution: {integrity: sha512-kRlAGTRWgPsOj7oARC9m1okJEXdL/8fekFVcxA8Hl7GH4r/sN4OJn/i6Flde373T50KS7Y37oFbMwlE8+F42kQ==}
 
+  caniuse-lite@1.0.30001703:
+    resolution: {integrity: sha512-kRlAGTRWgPsOj7oARC9m1okJEXdL/8fekFVcxA8Hl7GH4r/sN4OJn/i6Flde373T50KS7Y37oFbMwlE8+F42kQ==}
+
   ccount@2.0.1:
     resolution: {integrity: sha512-eyrF0jiFpY+3drT6383f1qhkbGsLSifNAjA61IUjZjmLCWjItY6LB9ft9YhoDgwfmclB2zhu51Lc7+95b8NRAg==}
 
@@ -1925,8 +1928,8 @@ packages:
   highlightjs-vue@1.0.0:
     resolution: {integrity: sha512-PDEfEF102G23vHmPhLyPboFCD+BkMGu+GuJe2d9/eH4FsCwvgBpnc9n0pGE+ffKdph38s6foEZiEjdgHdzp+IA==}
 
-  hono@4.7.2:
-    resolution: {integrity: sha512-8V5XxoOF6SI12jkHkzX/6aLBMU5GEF5g387EjVSQipS0DlxWgWGSMeEayY3CRBjtTUQYwLHx9JYouWqKzy2Vng==}
+  hono@4.7.4:
+    resolution: {integrity: sha512-Pst8FuGqz3L7tFF+u9Pu70eI0xa5S3LPUmrNd5Jm8nTHze9FxLTK9Kaj5g/k4UcwuJSXTP65SyHOPLrffpcAJg==}
     engines: {node: '>=16.9.0'}
 
   html-entities@2.5.2:
@@ -3490,9 +3493,9 @@ snapshots:
 
   '@fastify/busboy@2.1.1': {}
 
-  '@hono/zod-validator@0.4.3(hono@4.7.2)(zod@3.24.2)':
+  '@hono/zod-validator@0.4.3(hono@4.7.4)(zod@3.24.2)':
     dependencies:
-      hono: 4.7.2
+      hono: 4.7.4
       zod: 3.24.2
 
   '@img/sharp-darwin-arm64@0.33.5':
@@ -4252,6 +4255,8 @@ snapshots:
 
   caniuse-lite@1.0.30001703: {}
 
+  caniuse-lite@1.0.30001703: {}
+
   ccount@2.0.1: {}
 
   chai@5.1.2:
@@ -4740,7 +4745,7 @@ snapshots:
 
   highlightjs-vue@1.0.0: {}
 
-  hono@4.7.2: {}
+  hono@4.7.4: {}
 
   html-entities@2.5.2: {}
 
