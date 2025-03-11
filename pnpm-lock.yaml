@@ -50,7 +50,7 @@ importers:
         version: 2.1.9(@types/node@22.13.10)(sass-embedded@1.85.1)(terser@5.39.0)
       wrangler:
         specifier: ^3.106.0
-        version: 3.109.2(@cloudflare/workers-types@4.20250214.0)
+        version: 3.112.0(@cloudflare/workers-types@4.20250214.0)
 
   apps/doc:
     dependencies:
@@ -1463,6 +1463,9 @@ packages:
   caniuse-lite@1.0.30001703:
     resolution: {integrity: sha512-kRlAGTRWgPsOj7oARC9m1okJEXdL/8fekFVcxA8Hl7GH4r/sN4OJn/i6Flde373T50KS7Y37oFbMwlE8+F42kQ==}
 
+  caniuse-lite@1.0.30001703:
+    resolution: {integrity: sha512-kRlAGTRWgPsOj7oARC9m1okJEXdL/8fekFVcxA8Hl7GH4r/sN4OJn/i6Flde373T50KS7Y37oFbMwlE8+F42kQ==}
+
   ccount@2.0.1:
     resolution: {integrity: sha512-eyrF0jiFpY+3drT6383f1qhkbGsLSifNAjA61IUjZjmLCWjItY6LB9ft9YhoDgwfmclB2zhu51Lc7+95b8NRAg==}
 
@@ -2311,6 +2314,11 @@ packages:
     engines: {node: '>=16.13'}
     hasBin: true
 
+  miniflare@3.20250214.2:
+    resolution: {integrity: sha512-t+lT4p2lbOcKv4PS3sx1F/wcDAlbEYZCO2VooLp4H7JErWWYIi9yjD3UillC3CGOpiBahVg5nrPCoFltZf6UlA==}
+    engines: {node: '>=16.13'}
+    hasBin: true
+
   mlly@1.7.4:
     resolution: {integrity: sha512-qmdSIPC4bDJXgZTCR7XosJiNKySV7O215tsPtDN9iEO/7q/76b/ijtgRu/+epFXSJhijtTCCGp3DWS549P3xKw==}
 
@@ -2352,8 +2360,8 @@ packages:
     resolution: {integrity: sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg==}
     engines: {node: '>=0.10.0'}
 
-  ohash@1.1.4:
-    resolution: {integrity: sha512-FlDryZAahJmEF3VR3w1KogSEdWX3WhA5GPakFx4J81kEAiHyLMpdLLElS8n8dfNadMgAne/MywcvmogzscVt4g==}
+  ohash@1.1.6:
+    resolution: {integrity: sha512-TBu7PtV8YkAZn0tSxobKY2n2aAQva936lhRrj6957aDaCf9IEtqsKbgMzXE/F/sjqYOwmrukeORHNLe5glk7Cg==}
 
   parse-entities@2.0.0:
     resolution: {integrity: sha512-kkywGpCcRYhqQIchaWqZ875wzpS/bMKhz5HnN3p7wveJTkTtyAB/AlnS0f8DFSqYW1T82t6yEAkEcB+A1I3MbQ==}
@@ -3103,6 +3111,16 @@ packages:
 
   wrangler@3.109.2:
     resolution: {integrity: sha512-CT8izugPBth5o1o4gLNcQrDkHKSX2Jthy6gkyhaWiy2pFrx+536NMn/atWilLA1t1uhIgddEI5BXDNudIkPPHA==}
+    engines: {node: '>=16.17.0'}
+    hasBin: true
+    peerDependencies:
+      '@cloudflare/workers-types': ^4.20250214.0
+    peerDependenciesMeta:
+      '@cloudflare/workers-types':
+        optional: true
+
+  wrangler@3.112.0:
+    resolution: {integrity: sha512-PNQWGze3ODlWwG33LPr8kNhbht3eB3L9fogv+fapk2fjaqj0kNweRapkwmvtz46ojcqWzsxmTe4nOC0hIVUfPA==}
     engines: {node: '>=16.17.0'}
     hasBin: true
     peerDependencies:
@@ -4294,6 +4312,8 @@ snapshots:
 
   caniuse-lite@1.0.30001703: {}
 
+  caniuse-lite@1.0.30001703: {}
+
   ccount@2.0.1: {}
 
   chai@5.1.2:
@@ -5412,9 +5432,26 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
+  miniflare@3.20250214.2:
+    dependencies:
+      '@cspotcode/source-map-support': 0.8.1
+      acorn: 8.14.0
+      acorn-walk: 8.3.2
+      exit-hook: 2.2.1
+      glob-to-regexp: 0.4.1
+      stoppable: 1.1.0
+      undici: 5.28.5
+      workerd: 1.20250214.0
+      ws: 8.18.0
+      youch: 3.2.3
+      zod: 3.22.3
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+
   mlly@1.7.4:
     dependencies:
-      acorn: 8.14.0
+      acorn: 8.14.1
       pathe: 2.0.3
       pkg-types: 1.3.1
       ufo: 1.5.4
@@ -5439,7 +5476,7 @@ snapshots:
 
   object-assign@4.1.1: {}
 
-  ohash@1.1.4: {}
+  ohash@1.1.6: {}
 
   parse-entities@2.0.0:
     dependencies:
@@ -6037,7 +6074,7 @@ snapshots:
     dependencies:
       defu: 6.1.4
       mlly: 1.7.4
-      ohash: 1.1.4
+      ohash: 1.1.6
       pathe: 1.1.2
       ufo: 1.5.4
 
@@ -6284,6 +6321,25 @@ snapshots:
       blake3-wasm: 2.1.5
       esbuild: 0.17.19
       miniflare: 3.20250214.0
+      path-to-regexp: 6.3.0
+      unenv: 2.0.0-rc.1
+      workerd: 1.20250214.0
+    optionalDependencies:
+      '@cloudflare/workers-types': 4.20250214.0
+      fsevents: 2.3.3
+      sharp: 0.33.5
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+
+  wrangler@3.112.0(@cloudflare/workers-types@4.20250214.0):
+    dependencies:
+      '@cloudflare/kv-asset-handler': 0.3.4
+      '@esbuild-plugins/node-globals-polyfill': 0.2.3(esbuild@0.17.19)
+      '@esbuild-plugins/node-modules-polyfill': 0.2.2(esbuild@0.17.19)
+      blake3-wasm: 2.1.5
+      esbuild: 0.17.19
+      miniflare: 3.20250214.2
       path-to-regexp: 6.3.0
       unenv: 2.0.0-rc.1
       workerd: 1.20250214.0
