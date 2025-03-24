@@ -88,7 +88,7 @@ const promptD1Database = async (): Promise<{ name: string; id: string }> => {
 		process.exit(1);
 	}
 
-	return { name: d1Binding.database_id, id: d1Binding.database_name };
+	return { name: d1Binding.database_name, id: d1Binding.database_id };
 };
 
 const promptR2Bucket = async (): Promise<{ name: string }> => {
