@@ -9,8 +9,7 @@
 		"quality": "turbo lint check-types test:single",
 		"check-types": "turbo check-types",
 		"test:watch": "turbo test:watch",
-		"test:single": "turbo test:single",
-		"prepublishOnly": "pnpm run build"
+		"test:single": "turbo test:single"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",

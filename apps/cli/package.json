@@ -5,7 +5,8 @@
 	"scripts": {
 		"lint": "biome check",
 		"build": "tsup",
-		"build:watch": "tsup --watch"
+		"build:watch": "tsup --watch",
+		"prepublishOnly": "pnpm run build"
 	},
 	"bin": {
 		"npflared": "./dist/index.js"
