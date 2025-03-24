@@ -10,7 +10,11 @@
 	"bin": {
 		"npflared": "./dist/index.js"
 	},
-	"keywords": ["npm", "registry", "npflared"],
+	"keywords": [
+		"npm",
+		"registry",
+		"npflared"
+	],
 	"license": "ISC",
 	"devDependencies": {
 		"@types/degit": "^2.8.6",
