@@ -82,7 +82,7 @@ In order to automatically resolve your scoped package with your private registry
 For example I have multiple package in my private registry scoped with `@thomascogez` like (`@thomascogez/common`, `@thomascogez/tsconfig` `@thomascogez/biome-config`, ...)
 That I use in my projects. 
 
-So everytime i want to use them i have to add the following to my `.npmrc` file
+I every project want to use them i add the following to my `.npmrc` file
 ```txt file=".npmrc"
 @thomascogez:registry=http://your-npflared-registry.dev
 //your-npflared-registry.dev/:_authToken=${NPFLARED_AUTH_TOKEN} # <- NPFLARED_AUTH_TOKEN is stored on my machine env
