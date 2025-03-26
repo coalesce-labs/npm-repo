@@ -1,6 +1,10 @@
 [
 	"index",
-	"install",
+	{
+		"type": "dir",
+		"name": "install",
+		"label": "Install"
+	},
 	{
 		"type": "dir",
 		"name": "api",
