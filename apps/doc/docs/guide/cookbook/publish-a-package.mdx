@@ -70,6 +70,24 @@ Then you can run the following command:
 
 <PackageManagerTabs command="install --registry http://your-npflared-registry.dev" />
 
+--- 
+
+If you are using scoped package eg `@acme/math` you can add the following to your `.npmrc` file
+```txt file=".npmrc"
+@acme:registry=http://your-npflared-registry.dev
+```
+In order to automatically resolve your scoped package with your private registry.
+
+### Personal note
+For example I have multiple package in my private registry scoped with `@thomascogez` like (`@thomascogez/common`, `@thomascogez/tsconfig` `@thomascogez/biome-config`, ...)
+That I use in my projects. 
+
+So everytime i want to use them i have to add the following to my `.npmrc` file
+```txt file=".npmrc"
+@thomascogez:registry=http://your-npflared-registry.dev
+//your-npflared-registry.dev/:_authToken=${NPFLARED_AUTH_TOKEN} # <- NPFLARED_AUTH_TOKEN is stored on my machine env
+```
+
 ## Publish a new version of your package 
 
 If you make change to your package, you will need to publish a new version. 
