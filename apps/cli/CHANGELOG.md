@@ -1,5 +1,11 @@
 # @npflared/cli
 
+## 0.0.3
+
+### Patch Changes
+
+- 3aea557: Only include dist folder in package tarball
+
 ## 0.0.2
 
 ### Patch Changes
