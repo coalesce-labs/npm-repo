@@ -1,5 +1,11 @@
 # @npflared/api
 
+## 0.0.3
+
+### Patch Changes
+
+- 171a0f0: Bump dependencies
+
 ## 0.0.2
 
 ### Patch Changes

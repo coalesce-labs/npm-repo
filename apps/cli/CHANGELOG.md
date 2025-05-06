@@ -1,5 +1,11 @@
 # @npflared/cli
 
+## 0.0.5
+
+### Patch Changes
+
+- 171a0f0: Bump dependencies
+
 ## 0.0.4
 
 ### Patch Changes
