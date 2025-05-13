@@ -1,5 +1,11 @@
 # @npflared/api
 
+## 0.0.4
+
+### Patch Changes
+
+- f302768: Bump dependencies
+
 ## 0.0.3
 
 ### Patch Changes
