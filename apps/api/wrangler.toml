@@ -9,7 +9,7 @@ FALLBACK_REGISTRY_ENDPOINT = "https://registry.npmjs.org"
 
 [[r2_buckets]]
 binding = "BUCKET"
-bucket_name = "BUCKET_NAME"
+bucket_name = "bucket-name"
 
 [[d1_databases]]
 binding = "DB"
