@@ -1,5 +1,11 @@
 # @npflared/cli
 
+## 0.0.7
+
+### Patch Changes
+
+- 9093b40: Bump dependencies
+
 ## 0.0.6
 
 ### Patch Changes
