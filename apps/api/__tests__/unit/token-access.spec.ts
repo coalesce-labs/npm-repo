@@ -4,152 +4,102 @@ import { assertTokenAccess } from "../../src/utils/access";
 
 type Token = typeof tokenTable.$inferSelect;
 
-describe("assetTokenAccess", () => {
-	describe("Check read only access", () => {
-		const readOnlyAccessToken: Token = {
-			name: "test-token",
-			token: "test-token",
+describe("assertTokenAccess", () => {
+	describe("Simple scope access control", () => {
+		const readOnlyToken: Token = {
+			name: "read-only-token",
+			token: "test-token-1",
 			createdAt: Date.now(),
 			updatedAt: Date.now(),
-			scopes: [{ type: "package:read", values: ["test-package"] }]
+			scopes: ["read"]
 		};
 
-		const writeOnlyAccessToken: Token = {
-			name: "test-token",
-			token: "test-token",
+		const writeOnlyToken: Token = {
+			name: "write-only-token",
+			token: "test-token-2",
 			createdAt: Date.now(),
 			updatedAt: Date.now(),
-			scopes: [{ type: "package:write", values: ["test-package"] }]
+			scopes: ["write"]
 		};
 
-		const readWriteAccessToken: Token = {
-			name: "test-token",
-			token: "test-token",
+		const readWriteToken: Token = {
+			name: "read-write-token",
+			token: "test-token-3",
 			createdAt: Date.now(),
 			updatedAt: Date.now(),
-			scopes: [{ type: "package:read+write", values: ["test-package"] }]
+			scopes: ["read", "write"]
 		};
 
-		const readOnlyAccessTokenWildcardAccess: Token = {
-			name: "test-token",
-			token: "test-token",
+		const noScopesToken: Token = {
+			name: "no-scopes-token",
+			token: "test-token-4",
 			createdAt: Date.now(),
 			updatedAt: Date.now(),
-			scopes: [{ type: "package:read", values: ["*"] }]
+			scopes: []
 		};
 
-		const writeOnlyAccessTokenWildcardAccess: Token = {
-			name: "test-token",
-			token: "test-token",
-			createdAt: Date.now(),
-			updatedAt: Date.now(),
-			scopes: [{ type: "package:read", values: ["*"] }]
-		};
+		describe("Read access", () => {
+			it("should allow read access with read-only token", () => {
+				const access = assertTokenAccess(readOnlyToken);
+				expect(access("read", "package", "@test/package")).toBe(true);
+			});
 
-		it("should not allow package read access when token has no access for provided package", () => {
-			const access = assertTokenAccess(readOnlyAccessToken);
-			expect(access("read", "package", "test-package-not-allowed")).toBe(false);
+			it("should not allow read access with write-only token", () => {
+				const access = assertTokenAccess(writeOnlyToken);
+				expect(access("read", "package", "@test/package")).toBe(false);
+			});
+
+			it("should allow read access with read-write token", () => {
+				const access = assertTokenAccess(readWriteToken);
+				expect(access("read", "package", "@test/package")).toBe(true);
+			});
+
+			it("should not allow read access with no scopes", () => {
+				const access = assertTokenAccess(noScopesToken);
+				expect(access("read", "package", "@test/package")).toBe(false);
+			});
 		});
 
-		it("should not allow package read access when token has only write access for provided package", () => {
-			const access = assertTokenAccess(writeOnlyAccessToken);
-			expect(access("read", "package", "test-package-not-allowed")).toBe(false);
+		describe("Write access", () => {
+			it("should not allow write access with read-only token", () => {
+				const access = assertTokenAccess(readOnlyToken);
+				expect(access("write", "package", "@test/package")).toBe(false);
+			});
+
+			it("should allow write access with write-only token", () => {
+				const access = assertTokenAccess(writeOnlyToken);
+				expect(access("write", "package", "@test/package")).toBe(true);
+			});
+
+			it("should allow write access with read-write token", () => {
+				const access = assertTokenAccess(readWriteToken);
+				expect(access("write", "package", "@test/package")).toBe(true);
+			});
+
+			it("should not allow write access with no scopes", () => {
+				const access = assertTokenAccess(noScopesToken);
+				expect(access("write", "package", "@test/package")).toBe(false);
+			});
 		});
 
-		it("should allow package read access when token has access for provided package", () => {
-			const access = assertTokenAccess(readOnlyAccessToken);
-			expect(access("read", "package", "test-package")).toBe(true);
-		});
+		describe("Token and user access", () => {
+			it("should allow token read access with read scope", () => {
+				const access = assertTokenAccess(readOnlyToken);
+				expect(access("read", "token", "*")).toBe(true);
+			});
 
-		it("should allow package read access when token has wildcard access", () => {
-			const access = assertTokenAccess(readOnlyAccessTokenWildcardAccess);
-			expect(access("read", "package", "test-package")).toBe(true);
-		});
+			it("should allow token write access with write scope", () => {
+				const access = assertTokenAccess(writeOnlyToken);
+				expect(access("write", "token", "*")).toBe(true);
+			});
 
-		it("should allow package when token has read+write access", () => {
-			const access = assertTokenAccess(readWriteAccessToken);
-			expect(access("read", "package", "test-package")).toBe(true);
-		});
-	});
-
-	describe("Check write only access", () => {
-		const readOnlyAccessToken: Token = {
-			name: "test-token",
-			token: "test-token",
-			createdAt: Date.now(),
-			updatedAt: Date.now(),
-			scopes: [{ type: "package:read", values: ["test-package"] }]
-		};
-
-		const writeOnlyAccessToken: Token = {
-			name: "test-token",
-			token: "test-token",
-			createdAt: Date.now(),
-			updatedAt: Date.now(),
-			scopes: [{ type: "package:write", values: ["test-package"] }]
-		};
-
-		const readWriteAccessToken: Token = {
-			name: "test-token",
-			token: "test-token",
-			createdAt: Date.now(),
-			updatedAt: Date.now(),
-			scopes: [{ type: "package:read+write", values: ["test-package"] }]
-		};
-
-		const readOnlyAccessTokenWildcardAccess: Token = {
-			name: "test-token",
-			token: "test-token",
-			createdAt: Date.now(),
-			updatedAt: Date.now(),
-			scopes: [{ type: "package:read", values: ["*"] }]
-		};
-
-		const writeOnlyAccessTokenWildcardAccess: Token = {
-			name: "test-token",
-			token: "test-token",
-			createdAt: Date.now(),
-			updatedAt: Date.now(),
-			scopes: [{ type: "package:write", values: ["*"] }]
-		};
-		it("should not allow package write access when token has no access for provided package", () => {
-			const access = assertTokenAccess(writeOnlyAccessToken);
-			expect(access("write", "package", "test-package-not-allowed")).toBe(false);
-		});
-
-		it("should not allow package write access when token has only read access for provided package", () => {
-			const access = assertTokenAccess(readOnlyAccessToken);
-			expect(access("write", "package", "test-package")).toBe(false);
-		});
-
-		it("should not allow package write access when token has wildcard access with only read access", () => {
-			const access = assertTokenAccess(readOnlyAccessTokenWildcardAccess);
-			expect(access("write", "package", "test-package")).toBe(false);
-		});
-
-		it("should allow package write when the token has write access for provided package", () => {
-			const access = assertTokenAccess(writeOnlyAccessToken);
-			expect(access("write", "package", "test-package")).toBe(true);
-		});
-
-		it("should allow package write access when token has read+write access", () => {
-			const access = assertTokenAccess(readWriteAccessToken);
-			expect(access("write", "package", "test-package")).toBe(true);
-		});
-
-		it("should allow package write access when token has wildcard access", () => {
-			const access = assertTokenAccess(writeOnlyAccessTokenWildcardAccess);
-			expect(access("write", "package", "test-package")).toBe(true);
-		});
-
-		it("should not allow package write access when token has only read access for provided package", () => {
-			const access = assertTokenAccess(readOnlyAccessToken);
-			expect(access("write", "package", "test-package-not-allowed")).toBe(false);
-		});
-
-		it("should allow package write access when token has access for provided package", () => {
-			const access = assertTokenAccess(writeOnlyAccessToken);
-			expect(access("write", "package", "test-package")).toBe(true);
+			it("should work with any entity type when scopes match", () => {
+				const access = assertTokenAccess(readWriteToken);
+				expect(access("read", "user", "test-user")).toBe(true);
+				expect(access("write", "user", "test-user")).toBe(true);
+				expect(access("read", "token", "some-token")).toBe(true);
+				expect(access("write", "token", "some-token")).toBe(true);
+			});
 		});
 	});
 });

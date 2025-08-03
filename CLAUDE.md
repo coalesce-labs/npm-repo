@@ -1,6 +1,6 @@
-# Claude AI Assistant Guide for NPM Registry Management
+# CLAUDE.md
 
-This document provides context and commands for Claude AI to help manage, debug, and maintain the Coalesce Labs NPM Registry.
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## 🏗️ Project Overview
 
@@ -11,10 +11,83 @@ This is a private NPM registry built on Cloudflare Workers infrastructure:
 - **Storage**: coalesce-labs-npm-repository (R2)
 - **Environment**: Cloudflare Workers with Node.js compatibility
 
+## 📁 Architecture & Structure
+
+### Core Components
+- **apps/api/**: Main worker application using Hono framework
+  - `src/index.ts`: Entry point, routes configuration
+  - `src/routers/`: Package and token management endpoints
+  - `src/middlewares/`: Auth middleware (loadToken.ts)
+  - `src/db/`: Database schema and queries
+  - `src/utils/`: Access control and common utilities
+- **apps/cli/**: CLI tools for registry management
+- **apps/doc/**: Documentation site
+- **infrastructure/**: Terraform and setup scripts
+- **.github/workflows/**: CI/CD automation
+
+### Tech Stack
+- **Framework**: Hono (lightweight web framework)
+- **Database**: Drizzle ORM with D1
+- **Testing**: Vitest with Cloudflare Workers pool
+- **Package Manager**: pnpm with Turbo monorepo
+- **Deployment**: Wrangler CLI
+
+## 🛠️ Development Commands
+
+### Initial Setup
+```bash
+# Quick local setup (creates DB, adds admin token, creates test package)
+./scripts/local-setup.sh
+
+# Manual setup
+pnpm install
+cd apps/api
+pnpm run migrate:local
+```
+
+### Development
+```bash
+# Start local server (runs at http://localhost:8787)
+cd apps/api
+pnpm run dev
+
+# Run all quality checks
+pnpm run quality
+
+# Individual commands
+pnpm run lint          # Biome linting
+pnpm run check-types   # TypeScript type checking
+pnpm run test:single   # Run tests once
+pnpm run test:watch    # Watch mode for tests
+```
+
+### Database Management
+```bash
+cd apps/api
+
+# Generate new migrations
+pnpm run generate-migrations
+
+# Apply migrations
+pnpm run migrate:local  # Local D1
+pnpm run migrate:prod   # Production D1
+```
+
+### Deployment
+```bash
+# Deploy via GitHub Actions (recommended)
+git push origin main        # Deploys to staging
+git push origin production  # Deploys to production
+
+# Manual deployment
+cd apps/api
+wrangler deploy --env production
+wrangler deploy --env staging
+```
+
 ## 🔍 Debugging Commands
 
 ### View Real-time Logs
-
 ```bash
 # Production logs (live tail)
 wrangler tail --env production
@@ -33,7 +106,6 @@ wrangler tail --env production > logs.txt
 ```
 
 ### Check Worker Status
-
 ```bash
 # List all deployments
 wrangler deployments list
@@ -46,7 +118,6 @@ curl -H "Authorization: Bearer YOUR_TOKEN" https://npm.coalescelabs.ai/-/whoami
 ```
 
 ### Database Queries
-
 ```bash
 # View all tokens
 wrangler d1 execute npflared-db --command "SELECT token, name, scopes, created_at FROM token" --env production
@@ -64,10 +135,9 @@ wrangler d1 execute npflared-db --command "SELECT COUNT(*) as total FROM package
 wrangler d1 execute npflared-db --command "SELECT * FROM package WHERE name LIKE '@coalesce-labs/%'" --env production
 ```
 
-## 🛠️ Common Tasks
+## 🔐 Authentication & Tokens
 
 ### Add New Authentication Token
-
 ```bash
 # Generate secure token
 NEW_TOKEN=$(openssl rand -hex 32)
@@ -81,7 +151,6 @@ wrangler d1 execute npflared-db --command "INSERT INTO token (token, name, scope
 ```
 
 ### Remove/Revoke Token
-
 ```bash
 # List tokens to find the one to remove
 wrangler d1 execute npflared-db --command "SELECT token, name FROM token" --env production
@@ -90,8 +159,13 @@ wrangler d1 execute npflared-db --command "SELECT token, name FROM token" --env 
 wrangler d1 execute npflared-db --command "DELETE FROM token WHERE token = 'TOKEN_TO_DELETE'" --env production
 ```
 
-### Package Management
+### Token Scopes
+- `["read"]`: Can only install packages
+- `["read", "write"]`: Can install and publish packages
 
+## 📦 Package Management
+
+### Delete Package Operations
 ```bash
 # Delete a package version
 wrangler d1 execute npflared-db --command "DELETE FROM package_version WHERE name = '@scope/package' AND version = '1.0.0'" --env production
@@ -103,7 +177,40 @@ wrangler d1 execute npflared-db --command "DELETE FROM package WHERE name = '@sc
 wrangler d1 execute npflared-db --command "UPDATE package SET updated_at = strftime('%s', 'now') * 1000 WHERE name = '@scope/package'" --env production
 ```
 
-## 🚨 Troubleshooting Guide
+## 🏃 Local Development
+
+### Environment Variables
+
+The project uses two types of environment files:
+
+1. **`.env`** (root directory) - For scripts and deployment tools
+   - `CLOUDFLARE_API_TOKEN`: Your Cloudflare API token
+   - `CLOUDFLARE_ACCOUNT_ID`: Your account ID
+   - `NPM_AUTH_TOKEN`: Default auth token for testing
+
+2. **`apps/api/.dev.vars`** - For Wrangler local development
+   - `AUTH_TOKEN`: Authentication token for local testing
+   - `DEBUG`: Enable debug logging
+   - Auto-loaded by wrangler dev
+
+### Test Local Registry
+```bash
+# Check it's running
+curl http://localhost:8787
+
+# Test auth (uses default admin token from local-setup.sh)
+curl -H "Authorization: Bearer 646834181872f36e10bfedda9ce9f93338777b3ed04ff671e921059104c03ab1" \
+  http://localhost:8787/-/whoami
+
+# Publish test package
+cd test-local-package
+npm publish
+
+# Install from local registry
+npm install @test/hello-world --registry=http://localhost:8787
+```
+
+## 🚨 Troubleshooting
 
 ### Common Issues and Solutions
 
@@ -143,7 +250,7 @@ wrangler tail --env production --format json | jq '.event.request.url' | sort | 
 wrangler d1 execute npflared-db --command "SELECT COUNT(*) FROM package_version" --env production
 ```
 
-## 📊 Monitoring Queries
+## 📊 Monitoring & Statistics
 
 ### Daily Statistics
 ```bash
@@ -220,7 +327,6 @@ wrangler deploy --env production
 ```
 
 ## 🔐 Security Checks
-
 ```bash
 # List all tokens with write access
 wrangler d1 execute npflared-db --command "SELECT name, created_at FROM token WHERE scopes LIKE '%write%'" --env production
@@ -231,13 +337,6 @@ wrangler d1 execute npflared-db --command "SELECT name, created_at FROM token WH
 # Check for unusual activity
 wrangler tail --env production --search "error" --format json | jq '.event.request | {method, url, headers}' | grep -v "GET"
 ```
-
-## 📝 Environment Variables
-
-Current configuration in `wrangler.production.toml`:
-- `FALLBACK_REGISTRY_ENDPOINT`: https://registry.npmjs.org
-- `DB`: D1 database binding
-- `BUCKET`: R2 bucket binding
 
 ## 🆘 Emergency Procedures
 
@@ -258,82 +357,45 @@ Current configuration in `wrangler.production.toml`:
 3. Check token database integrity
 4. Review recent deployments
 
-## 📍 Important File Locations
+## 📍 Key File Locations
 
-- Worker code: `apps/api/src/index.ts`
-- Database schema: `apps/api/migrations/0000_bright_mercury.sql`
+- Worker entry: `apps/api/src/index.ts`
+- Route handlers: `apps/api/src/routers/`
+- Database schema: `apps/api/src/db/schema.ts`
+- Migrations: `apps/api/migrations/`
 - Production config: `apps/api/wrangler.production.toml`
 - Deployment workflow: `.github/workflows/deploy.yml`
 - Backup workflow: `.github/workflows/backup.yml`
 
-## 🔧 Development Commands
+## 🔧 Testing
 
+### Run Tests
 ```bash
-# Run tests
-pnpm test
+# Run all tests once
+pnpm run test:single
 
-# Check types
-pnpm typecheck
+# Run tests in watch mode
+pnpm run test:watch
 
-# Lint code
-pnpm lint
-
-# Local development
+# Run tests for API only
 cd apps/api
-wrangler dev
+pnpm run test:single
 ```
 
-## 🏃 Local Development Setup
+### Test Files Location
+- API tests: `apps/api/src/**/*.test.ts`
+- Uses Vitest with Cloudflare Workers test environment
 
-### Quick Setup
-```bash
-# Run the setup script
-./scripts/local-setup.sh
+## 📝 Configuration
 
-# This will:
-# - Install dependencies
-# - Create .env and .dev.vars files
-# - Set up local D1 database
-# - Add admin token to local DB
-# - Create a test package
-```
+### Environment Configuration
+- Production: `apps/api/wrangler.production.toml`
+- Staging: `apps/api/wrangler.staging.toml`
+- Local: `apps/api/.dev.vars`
 
-### Start Local Server
-```bash
-cd apps/api
-pnpm run dev
-# Server runs at http://localhost:8787
-```
-
-### Local Environment Variables
-
-The project uses two types of environment files:
-
-1. **`.env`** (root directory) - For scripts and deployment tools
-   - `CLOUDFLARE_API_TOKEN`: Your Cloudflare API token
-   - `CLOUDFLARE_ACCOUNT_ID`: Your account ID
-   - `NPM_AUTH_TOKEN`: Default auth token for testing
-
-2. **`apps/api/.dev.vars`** - For Wrangler local development
-   - `AUTH_TOKEN`: Authentication token for local testing
-   - `DEBUG`: Enable debug logging
-   - Auto-loaded by wrangler dev
-
-### Test Local Registry
-```bash
-# Check it's running
-curl http://localhost:8787
-
-# Test auth
-curl -H "Authorization: Bearer 646834181872f36e10bfedda9ce9f93338777b3ed04ff671e921059104c03ab1" \
-  http://localhost:8787/-/whoami
-
-# Publish test package
-cd test-local-package
-npm publish
-
-# Install from local registry
-npm install @test/hello-world --registry=http://localhost:8787
-```
+### Key Bindings
+- `DB`: D1 database binding
+- `BUCKET`: R2 bucket binding
+- `FALLBACK_REGISTRY_ENDPOINT`: https://registry.npmjs.org
 
 Remember: Always check logs first when debugging issues. Most problems are visible in the worker logs or D1 query results.

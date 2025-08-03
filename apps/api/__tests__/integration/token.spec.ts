@@ -14,7 +14,7 @@ describe("token routes", () => {
 				},
 				body: JSON.stringify({
 					name: "test-token",
-					scopes: [{ type: "package:read", values: ["*"] }]
+					scopes: ["read", "write"]
 				})
 			});
 
@@ -34,7 +34,7 @@ describe("token routes", () => {
 				},
 				body: JSON.stringify({
 					name: "test-token",
-					scopes: [{ type: "package:read", values: ["*"] }]
+					scopes: ["read", "write"]
 				})
 			});
 
@@ -45,8 +45,11 @@ describe("token routes", () => {
 			expect(responseBody).toBe("Forbidden");
 		});
 
-		it("should not create a token with a token that does not have the token write scope", async () => {
-			const { token } = await createToken();
+		it("should create a token with a token that has write scope", async () => {
+			const { token } = await createToken({
+				name: "test-token-creator",
+				scopes: ["write"]
+			});
 
 			const response = await SELF.fetch("http://localhost/-/npm/v1/tokens", {
 				method: "POST",
@@ -55,16 +58,12 @@ describe("token routes", () => {
 					Authorization: `Bearer ${token}`
 				},
 				body: JSON.stringify({
-					name: "test-token",
-					scopes: [{ type: "package:read", values: ["*"] }]
+					name: "new-test-token",
+					scopes: ["read"]
 				})
 			});
 
-			expect(response.status).toBe(403);
-			expect(response.statusText).toBe("Forbidden");
-
-			const responseBody = await response.text();
-			expect(responseBody).toBe("Forbidden");
+			expect(response.status).toBe(201);
 		});
 
 		it("should not create a token without providing at least one scope", async () => {
@@ -93,12 +92,7 @@ describe("token routes", () => {
 				},
 				body: JSON.stringify({
 					name: "test-token",
-					scopes: [
-						{
-							type: "invalid_scope",
-							values: ["*"]
-						}
-					]
+					scopes: ["invalid_scope"]
 				})
 			});
 
@@ -109,12 +103,7 @@ describe("token routes", () => {
 		it("should create a token", async () => {
 			const body = {
 				name: "test-token",
-				scopes: [
-					{
-						type: "package:read+write",
-						values: ["*"]
-					}
-				]
+				scopes: ["read", "write"]
 			};
 
 			const response = await SELF.fetch("http://localhost/-/npm/v1/tokens", {
@@ -166,8 +155,11 @@ describe("token routes", () => {
 			expect(responseBody).toBe("Forbidden");
 		});
 
-		it("should not get tokens with a token that does not have the token read scope", async () => {
-			const { token } = await createToken();
+		it("should get tokens with a token that has read scope", async () => {
+			const { token } = await createToken({
+				name: "test-token-reader",
+				scopes: ["read"]
+			});
 
 			const response = await SELF.fetch("http://localhost/-/npm/v1/tokens", {
 				method: "GET",
@@ -176,8 +168,7 @@ describe("token routes", () => {
 				}
 			});
 
-			expect(response.status).toBe(403);
-			expect(response.statusText).toBe("Forbidden");
+			expect(response.status).toBe(200);
 		});
 
 		it("should get tokens", async () => {
@@ -199,13 +190,7 @@ describe("token routes", () => {
 			expect(adminToken).to.be.an("object");
 			expect(adminToken).to.have.property("token", env.ADMIN_TOKEN);
 			expect(adminToken).to.have.property("name", "admin-token");
-			expect(adminToken)
-				.to.have.property("scopes")
-				.to.be.deep.equal([
-					{ type: "token:read+write", values: ["*"] },
-					{ type: "user:read+write", values: ["*"] },
-					{ type: "package:read+write", values: ["*"] }
-				]);
+			expect(adminToken).to.have.property("scopes").to.be.deep.equal(["read", "write"]);
 
 			const createdToken = responseBody.find((tokenDetails) => tokenDetails.token === token);
 			expect(createdToken).to.be.an("object");
@@ -245,8 +230,11 @@ describe("token routes", () => {
 			expect(responseBody).toBe("Forbidden");
 		});
 
-		it("should not get a token with a token that does not have the token read scope", async () => {
-			const { token } = await createToken();
+		it("should get a token with a token that has read scope", async () => {
+			const { token } = await createToken({
+				name: "test-token-reader",
+				scopes: ["read"]
+			});
 
 			const response = await SELF.fetch(`http://localhost/-/npm/v1/tokens/token/${token}`, {
 				method: "GET",
@@ -255,8 +243,7 @@ describe("token routes", () => {
 				}
 			});
 
-			expect(response.status).toBe(403);
-			expect(response.statusText).toBe("Forbidden");
+			expect(response.status).toBe(200);
 		});
 
 		it("should get a token", async () => {
@@ -310,18 +297,25 @@ describe("token routes", () => {
 			expect(responseBody).toBe("Forbidden");
 		});
 
-		it("should not delete a token with a token that does not have the token write scope", async () => {
-			const { token } = await createToken();
+		it("should delete a token with a token that has write scope", async () => {
+			const { token: tokenToDelete } = await createToken({
+				name: "token-to-delete",
+				scopes: ["read"]
+			});
 
-			const response = await SELF.fetch(`http://localhost/-/npm/v1/tokens/token/${token}`, {
+			const { token: deleterToken } = await createToken({
+				name: "deleter-token",
+				scopes: ["write"]
+			});
+
+			const response = await SELF.fetch(`http://localhost/-/npm/v1/tokens/token/${tokenToDelete}`, {
 				method: "DELETE",
 				headers: {
-					Authorization: `Bearer ${token}`
+					Authorization: `Bearer ${deleterToken}`
 				}
 			});
 
-			expect(response.status).toBe(403);
-			expect(response.statusText).toBe("Forbidden");
+			expect(response.status).toBe(200);
 		});
 
 		it("should delete a token", async () => {

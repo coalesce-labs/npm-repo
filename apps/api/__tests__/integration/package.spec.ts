@@ -39,10 +39,10 @@ describe("package routes", () => {
 			expect(response.statusText).toBe("Forbidden");
 		});
 
-		it("should not publish a package with a token that does not have write access for provided package", async () => {
+		it("should publish a package with a token that has write access", async () => {
 			const { token } = await createToken({
 				name: "test-token",
-				scopes: [{ type: "package:write", values: ["test-package"] }]
+				scopes: ["write"]
 			});
 
 			const response = await SELF.fetch("http://localhost/mock", {
@@ -54,14 +54,13 @@ describe("package routes", () => {
 				body: JSON.stringify(packagePublishPayload)
 			});
 
-			expect(response.status).toBe(403);
-			expect(response.statusText).toBe("Forbidden");
+			expect(response.status).toBe(200);
 		});
 
 		it("should not publish a package with a token that only has read access for provided package", async () => {
 			const { token } = await createToken({
 				name: "test-token",
-				scopes: [{ type: "package:read", values: ["mock"] }]
+				scopes: ["read"]
 			});
 
 			const response = await SELF.fetch("http://localhost/mock", {
@@ -80,7 +79,7 @@ describe("package routes", () => {
 		it("should not publish package when providing an empty dist-tags", async () => {
 			const { token } = await createToken({
 				name: "test-token",
-				scopes: [{ type: "package:write", values: ["mock"] }]
+				scopes: ["write"]
 			});
 
 			const response = await SELF.fetch("http://localhost/mock", {
@@ -105,7 +104,7 @@ describe("package routes", () => {
 		it("should not publish package without providing a version", async () => {
 			const { token } = await createToken({
 				name: "test-token",
-				scopes: [{ type: "package:write", values: ["mock"] }]
+				scopes: ["write"]
 			});
 
 			const response = await SELF.fetch("http://localhost/mock", {
@@ -130,7 +129,7 @@ describe("package routes", () => {
 		it("should not publish package without providing an attachment", async () => {
 			const { token } = await createToken({
 				name: "test-token",
-				scopes: [{ type: "package:write", values: ["mock"] }]
+				scopes: ["write"]
 			});
 
 			const response = await SELF.fetch("http://localhost/mock", {
@@ -155,7 +154,7 @@ describe("package routes", () => {
 		it("should not publish package with an invalid attachment name", async () => {
 			const { token } = await createToken({
 				name: "test-token",
-				scopes: [{ type: "package:write", values: ["mock"] }]
+				scopes: ["write"]
 			});
 
 			const response = await SELF.fetch("http://localhost/mock", {
@@ -182,7 +181,7 @@ describe("package routes", () => {
 		it("should not publish package with an invalid tarball link", async () => {
 			const { token } = await createToken({
 				name: "test-token",
-				scopes: [{ type: "package:write", values: ["mock"] }]
+				scopes: ["write"]
 			});
 
 			const response = await SELF.fetch("http://localhost/mock", {
@@ -215,7 +214,7 @@ describe("package routes", () => {
 		it("should publish a package", async () => {
 			const { token } = await createToken({
 				name: "test-token",
-				scopes: [{ type: "package:write", values: ["mock"] }]
+				scopes: ["write"]
 			});
 
 			const response = await SELF.fetch("http://localhost/mock", {
@@ -237,7 +236,7 @@ describe("package routes", () => {
 		it("should not publish same package version twice", async () => {
 			const { token } = await createToken({
 				name: "test-token",
-				scopes: [{ type: "package:write", values: ["mock"] }]
+				scopes: ["write"]
 			});
 
 			const firstPublishResponse = await SELF.fetch("http://localhost/mock", {
@@ -274,7 +273,7 @@ describe("package routes", () => {
 		it("should publish two different versions of the same package", async () => {
 			const { token } = await createToken({
 				name: "test-token",
-				scopes: [{ type: "package:write", values: ["mock"] }]
+				scopes: ["write"]
 			});
 
 			const firstPublishResponse = await SELF.fetch("http://localhost/mock", {
@@ -329,10 +328,10 @@ describe("package routes", () => {
 			expect(response.statusText).to.be.a("string").to.equal("Forbidden");
 		});
 
-		it("should not get a package with a token that does not have read access for provided package", async () => {
+		it("should get a package with a token that has read access", async () => {
 			const { token } = await createToken({
 				name: "test-token",
-				scopes: [{ type: "package:read", values: ["an-another-package"] }]
+				scopes: ["read"]
 			});
 
 			await publishMockPackage();
@@ -343,14 +342,13 @@ describe("package routes", () => {
 				}
 			});
 
-			expect(response.status).toBe(403);
-			expect(response.statusText).to.be.a("string").to.equal("Forbidden");
+			expect(response.status).toBe(200);
 		});
 
 		it("should not get a package with a token that only has write access for provided package", async () => {
 			const { token } = await createToken({
 				name: "test-token",
-				scopes: [{ type: "package:write", values: ["mock"] }]
+				scopes: ["write"]
 			});
 
 			await publishMockPackage();
@@ -368,7 +366,7 @@ describe("package routes", () => {
 		it("should get a package", async () => {
 			const { token } = await createToken({
 				name: "test-token",
-				scopes: [{ type: "package:read+write", values: ["mock"] }]
+				scopes: ["read", "write"]
 			});
 
 			await publishMockPackage();
@@ -420,12 +418,12 @@ describe("package routes", () => {
 			expect(response.statusText).toBe("Forbidden");
 		});
 
-		it("should not get a package tarball with a token that does not have read access for provided package", async () => {
+		it("should get a package tarball with a token that has read access", async () => {
 			await publishMockPackage();
 
 			const { token } = await createToken({
 				name: "test-token",
-				scopes: [{ type: "package:read", values: ["an-another-package"] }]
+				scopes: ["read"]
 			});
 
 			const response = await SELF.fetch("http://localhost/mock/-/mock-1.0.0.tgz", {
@@ -434,15 +432,14 @@ describe("package routes", () => {
 				}
 			});
 
-			expect(response.status).toBe(403);
-			expect(response.statusText).toBe("Forbidden");
+			expect(response.status).toBe(200);
 		});
 
 		it("should not get a package tarball with a token that only has write access for provided package", async () => {
 			await publishMockPackage();
 			const { token } = await createToken({
 				name: "test-token",
-				scopes: [{ type: "package:write", values: ["mock"] }]
+				scopes: ["write"]
 			});
 
 			const response = await SELF.fetch("http://localhost/mock/-/mock-1.0.0.tgz", {
@@ -458,7 +455,7 @@ describe("package routes", () => {
 		it("should not get package tarball of a package that does not exist", async () => {
 			const { token } = await createToken({
 				name: "test-token",
-				scopes: [{ type: "package:read", values: ["mock"] }]
+				scopes: ["read"]
 			});
 
 			const response = await SELF.fetch("http://localhost/mock/-/mock-1.0.0.tgz", {
@@ -475,7 +472,7 @@ describe("package routes", () => {
 			await publishMockPackage();
 			const { token } = await createToken({
 				name: "test-token",
-				scopes: [{ type: "package:read+write", values: ["mock"] }]
+				scopes: ["read", "write"]
 			});
 
 			const response = await SELF.fetch("http://localhost/mock/-/mock-1.0.0.tgz", {

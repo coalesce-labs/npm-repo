@@ -13,7 +13,7 @@ export default defineWorkersConfig(async () => {
 		{
 			name: "admin-token",
 			queries: [
-				`INSERT INTO \`token\` (token, name, scopes, created_at, updated_at) VALUES ('${adminToken}', 'admin-token', '[{"type": "token:read+write", "values": ["*"]}, {"type": "user:read+write", "values": ["*"]}, {"type": "package:read+write", "values": ["*"]}]', ${now}, ${now})`
+				`INSERT INTO \`token\` (token, name, scopes, created_at, updated_at) VALUES ('${adminToken}', 'admin-token', '["read", "write"]', ${now}, ${now})`
 			]
 		}
 	];

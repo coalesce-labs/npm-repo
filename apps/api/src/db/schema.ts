@@ -3,7 +3,7 @@ import { integer, primaryKey, sqliteTable, text } from "drizzle-orm/sqlite-core"
 export const tokenTable = sqliteTable("token", {
 	token: text("token").primaryKey().notNull(),
 	name: text("name").notNull(),
-	scopes: text("scopes", { mode: "json" }).notNull().$type<Array<{ type: string; values: Array<string> }>>(),
+	scopes: text("scopes", { mode: "json" }).notNull().$type<Array<string>>(),
 	createdAt: integer("created_at").notNull(),
 	updatedAt: integer("updated_at").notNull()
 });

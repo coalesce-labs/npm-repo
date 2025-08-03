@@ -2,9 +2,9 @@ import { SELF, env } from "cloudflare:test";
 import type { tokenTable } from "../src/db/schema";
 import packagePublishPayload from "./mocks/package-publish-payload.json";
 export const createToken = async (
-	body: { name: string; scopes: Array<{ type: string; values: string[] }> } = {
+	body: { name: string; scopes: Array<string> } = {
 		name: crypto.randomUUID(),
-		scopes: [{ type: "package:read+write", values: ["*"] }]
+		scopes: ["read", "write"]
 	}
 ) => {
 	const response = await SELF.fetch("http://localhost/-/npm/v1/tokens", {
@@ -26,7 +26,7 @@ export const createToken = async (
 export const publishMockPackage = async (body = packagePublishPayload) => {
 	const { token } = await createToken({
 		name: "test-token",
-		scopes: [{ type: "package:write", values: ["mock"] }]
+		scopes: ["write"]
 	});
 
 	const response = await SELF.fetch("http://localhost/mock", {
