@@ -1,0 +1,17 @@
+name = "npflared-staging"
+main = "src/index.ts"
+compatibility_date = "2024-11-24"
+
+compatibility_flags = [ "nodejs_compat" ]
+
+[vars]
+FALLBACK_REGISTRY_ENDPOINT = "https://registry.npmjs.org"
+
+[[r2_buckets]]
+binding = "BUCKET"
+bucket_name = "coalesce-labs-npm-repository-staging"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "npflared-db-staging"
+database_id = "YOUR_STAGING_D1_DATABASE_ID"

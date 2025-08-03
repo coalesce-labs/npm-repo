@@ -11,6 +11,7 @@ node_modules
 .env.development.local
 .env.test.local
 .env.production.local
+.dev.vars
 
 # Testing
 coverage
@@ -36,3 +37,25 @@ yarn-error.log*
 # Misc
 .DS_Store
 *.pem
+
+# Wrangler
+.wrangler/
+.dev.vars
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+terraform.tfvars
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Secrets - NEVER commit these
+*-auth-token.txt
+*-secrets.txt
+registry-tokens.md

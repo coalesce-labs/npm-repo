@@ -1,0 +1,51 @@
+name: Deploy to Cloudflare Workers
+
+on:
+  push:
+    branches:
+      - main
+      - production
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run tests
+        run: pnpm test
+        working-directory: apps/api
+
+      - name: Deploy to Cloudflare Workers
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: apps/api
+          command: deploy --env ${{ github.ref == 'refs/heads/production' && 'production' || 'staging' }}
+
+      - name: Run smoke tests
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/production'
+        run: |
+          REGISTRY_URL=${{ github.ref == 'refs/heads/production' && 'https://npm.coalescelabs.ai' || 'https://npflared-staging.shy-snow-63d2.workers.dev' }}
+          echo "Testing registry at $REGISTRY_URL"
+          curl -f $REGISTRY_URL || exit 1

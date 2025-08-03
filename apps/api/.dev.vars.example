@@ -1,0 +1,11 @@
+# Wrangler local development variables
+# Copy this file to .dev.vars for local development
+
+# Authentication token for local testing
+AUTH_TOKEN=646834181872f36e10bfedda9ce9f93338777b3ed04ff671e921059104c03ab1
+
+# Optional: Override fallback registry for local development
+# FALLBACK_REGISTRY_ENDPOINT=https://registry.npmjs.org
+
+# Optional: Enable debug logging
+DEBUG=true

@@ -1,0 +1,60 @@
+name: Backup Registry Data
+
+on:
+  schedule:
+    # Run daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    name: Backup D1 and Package Metadata
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install Wrangler
+        run: npm install -g wrangler
+      
+      - name: Export D1 Data
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          mkdir -p backups
+          DATE=$(date +%Y%m%d_%H%M%S)
+          
+          # Export tokens
+          wrangler d1 execute npflared-db \
+            --command "SELECT * FROM token" \
+            --json > backups/tokens_${DATE}.json
+          
+          # Export packages
+          wrangler d1 execute npflared-db \
+            --command "SELECT * FROM package" \
+            --json > backups/packages_${DATE}.json
+          
+          # Export package versions
+          wrangler d1 execute npflared-db \
+            --command "SELECT * FROM package_version" \
+            --json > backups/package_versions_${DATE}.json
+      
+      - name: Upload Backup Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: registry-backup-${{ github.run_id }}
+          path: backups/
+          retention-days: 30
+      
+      - name: Create Backup Summary
+        run: |
+          echo "## Backup Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- Date: $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "- Files backed up:" >> $GITHUB_STEP_SUMMARY
+          ls -la backups/ >> $GITHUB_STEP_SUMMARY
